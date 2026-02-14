@@ -1,3 +1,4 @@
+GUI debug
 creation assets image : echelle, perso, brique, arbre, herbe, sable, clé, coffre, chat, chien, monstre, oiseau
 creation maps 
 creation scene menu, map1, map2
