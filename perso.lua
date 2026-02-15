@@ -41,9 +41,9 @@ function perso:newPerso(name, posX, posY, img)
         local distance = math.sqrt(dx * dx + dy * dy)
 
         if distance > 0.1 then
-            local speed = 2
-            local moveX = dx * speed * love.timer.getDelta()
-            local moveY = dy * speed * love.timer.getDelta()
+            local speed = 20
+            local moveX = dx / distance * speed * love.timer.getDelta()
+            local moveY = dy / distance * speed * love.timer.getDelta()
 
             self.posX = self.posX + moveX
             self.posY = self.posY + moveY
