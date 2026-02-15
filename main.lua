@@ -12,10 +12,11 @@ ennemi = {}
 ennemiImage = love.graphics.newImage("assets/ennemi/alien_32.png")
 heroImage = love.graphics.newImage("assets/hero/player_1_32.png")
 myHero = perso:newPerso("hero", 20, 20, heroImage)
-myEnnemi = perso:newPerso("ennemi", 150, 100, ennemiImage)
+myHero.hasPlan = false
+myEnnemi = perso:newPerso("ennemi", 100, 10, ennemiImage)
 print("init hero et perso")
-print(myHero.posX)
-print(myEnnemi.posX)
+--print(myHero.posX)
+--
 
 function love.load()
     
@@ -26,6 +27,11 @@ function love.update(dt)
     if love.keyboard.isDown("down") then myHero.posY = myHero.posY + 100 * dt end
     if love.keyboard.isDown("left") then myHero.posX = myHero.posX - 100 * dt end
     if love.keyboard.isDown("right") then myHero.posX = myHero.posX + 100 * dt end
+    
+    myEnnemi:update(dt)
+    --print(myEnnemi.target[2])
+
+
 end
 
 function love.draw()
