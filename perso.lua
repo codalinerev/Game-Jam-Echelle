@@ -3,18 +3,22 @@ perso = {}
 function perso:newPerso(name, posX, posY, img)
     local newP = {}
     newP.name = name
-
     newP.posX = posX
     newP.posY = posY
+    newP.hasPlan = true
+    points = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
+    newP.target = points[1]
+    newP.index = 1
+    newP.speed = 0
+    newP.isVisible = true
+    print("create new personnage: " .. name)
+
     if img then 
         newP.image = img
     else
         newP.image = love.graphics.newImage("assets/persoInit.png")
     end
-    newP.speed = 0
-    newP.isVisible = true
-    print("create new personnage: " .. name)
-
+    
     function newP:draw()
         if self.isVisible then
             love.graphics.setColor(1, 1, 1)
@@ -28,12 +32,6 @@ function perso:newPerso(name, posX, posY, img)
         self.posY = self.posY + dy
     end
     
-    
-    newP.hasPlan = true
-    points = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
-    newP.target = points[1]
-    newP.index = 1
-
     function newP:moveToPoint(pointX, pointY)
         local dx = pointX - self.posX
         local dy = pointY - self.posY

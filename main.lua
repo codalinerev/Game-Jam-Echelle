@@ -1,4 +1,4 @@
-require("perso")
+perso = require("perso")
 
 love.graphics.setDefaultFilter("nearest")
 love.graphics.setBackgroundColor(0.4, 0.1, 0.2)
@@ -36,7 +36,7 @@ function love.update(dt)
     if love.keyboard.isDown("space") then txt.message = "space pressed"
     if love.keyboard.isDown("j") then txt.message = "jump" end   
     end ]]
-    
+    myHero:update(dt)
     myEnnemi:update(dt)
     --print(myEnnemi.target[2])
     Bob:move(0.3,0.5)
