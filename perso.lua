@@ -1,6 +1,14 @@
 perso = {}
+listePerso = {}
+function printListe()
+    print("Liste des personnages:")
+    for i, name in ipairs(listePerso) do
+        print(i .. ": " .. name)
+    end
+end
 
 function perso:newPerso(name, posX, posY, img)
+    table.insert(listePerso, name)
     local newP = {}
     newP.name = name
     newP.posX = posX
@@ -8,10 +16,10 @@ function perso:newPerso(name, posX, posY, img)
     newP.hasPlan = true
     points = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
     newP.target = points[1]
-    newP.index = 1
+    newP.ind = 1
     newP.speed = 0
     newP.isVisible = true
-    print("create new personnage: " .. name)
+    print("create new personnage: " .. newP.name)
 
     if img then 
         newP.image = img
@@ -47,8 +55,8 @@ function perso:newPerso(name, posX, posY, img)
         else -- Arrivé à la cible
             self.posX = pointX
             self.posY = pointY --next target
-            self.index = self.index % #points + 1
-            self.target = points[self.index]
+            self.ind = self.ind % #points + 1
+            self.target = points[self.ind]
         end
         --print(self.index)
     end
@@ -56,9 +64,12 @@ function perso:newPerso(name, posX, posY, img)
 
     function newP:update(dt)
         if self.hasPlan then
-            self:moveToPoint(self.target[1], self.target[2]) 
-        else 
-            local dx = 0
+            self:moveToPoint(self.target[1], self.target[2])                      
+        end
+
+    end
+    function newP:updateHero(dt)
+        local dx = 0
             local dy = 0
             if love.keyboard.isDown("up") then dy = - 100 * dt end
             if love.keyboard.isDown("down") then dy = 100 * dt end
@@ -66,12 +77,10 @@ function perso:newPerso(name, posX, posY, img)
             if love.keyboard.isDown("right") then dx = 100 * dt end
             if love.keyboard.isDown("space") then txt.message = "space pressed"
             if love.keyboard.isDown("j") then txt.message = "jump" end   
-            self:move(dx, dy)          
-        end
-
+            self:move(dx, dy)
     end
 
     return newP
 end
-
+end
 return perso

@@ -1,4 +1,5 @@
-perso = require("perso")
+require("perso")
+Perso = perso
 
 love.graphics.setDefaultFilter("nearest")
 love.graphics.setBackgroundColor(0.4, 0.1, 0.2)
@@ -13,12 +14,14 @@ ennemiImage = love.graphics.newImage("assets/ennemi/alien_32.png")
 heroImage = love.graphics.newImage("assets/hero/player_1_32.png")
 imageInit = love.graphics.newImage("assets/persoInit.png")
 print("init images")
-myHero = perso:newPerso("hero", 20, 20, heroImage)
+hero = Perso:newPerso("hero", 20, 20, heroImage)
 print("create myHero")
-myHero.hasPlan = false
-myEnnemi = perso:newPerso("ennemi", 100, 10, ennemiImage)
+--Perso.printListe()
+print(hero.name)
+hero.hasPlan = false
+myEnnemi = Perso:newPerso("ennemi", 100, 10, ennemiImage)
 print("create myEnnemi")
-Bob = perso:newPerso("Bob", 200, 230, imageInit)
+Bob = Perso:newPerso("Bob", 200, 230, imageInit)
 print("Bob a été crée!")
 print("init hero et perso")
 --print(myHero.posX)
