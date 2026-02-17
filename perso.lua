@@ -70,17 +70,15 @@ function perso:newPerso(name, posX, posY, img)
     end
     function newP:updateHero(dt)
         local dx = 0
-            local dy = 0
-            if love.keyboard.isDown("up") then dy = - 100 * dt end
-            if love.keyboard.isDown("down") then dy = 100 * dt end
-            if love.keyboard.isDown("left") then dx = - 100 * dt end
-            if love.keyboard.isDown("right") then dx = 100 * dt end
-            if love.keyboard.isDown("space") then txt.message = "space pressed"
-            if love.keyboard.isDown("j") then txt.message = "jump" end   
-            self:move(dx, dy)
+        local dy = 0
+        if love.keyboard.isDown("up") then dy = - 100 * dt end
+        if love.keyboard.isDown("down") then dy = 100 * dt end
+        if love.keyboard.isDown("left") then dx = - 100 * dt end
+        if love.keyboard.isDown("right") then dx = 100 * dt end 
+        self:move(dx, dy)
     end
 
     return newP
 end
-end
+
 return perso

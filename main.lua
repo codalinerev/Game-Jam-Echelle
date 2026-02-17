@@ -39,7 +39,9 @@ function love.update(dt)
     if love.keyboard.isDown("space") then txt.message = "space pressed"
     if love.keyboard.isDown("j") then txt.message = "jump" end   
     end ]]
-    myHero:update(dt)
+    if love.keyboard.isDown("space") then txt.message = "space pressed" end
+    if love.keyboard.isDown("j") then txt.message = "jump" end
+    hero:updateHero(dt)
     myEnnemi:update(dt)
     --print(myEnnemi.target[2])
     Bob:move(0.3,0.5)
@@ -54,7 +56,7 @@ function love.draw()
     love.graphics.rectangle("fill", txt.x - 20, txt.y - 20, 200, 100)
     love.graphics.setColor(0.2, 0.1, 0.1)
     love.graphics.print(txt.message, txt.x, txt.y, 0, 1, 1)
-    myHero:draw()
+    hero:draw()
     myEnnemi:draw()
     Bob:draw()
 end
