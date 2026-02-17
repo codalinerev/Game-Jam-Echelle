@@ -13,8 +13,7 @@ function perso:newPerso(name, posX, posY, img)
     end
     newP.speed = 0
     newP.isVisible = true
-
-
+    print("create new personnage: " .. name)
 
     function newP:draw()
         if self.isVisible then
@@ -25,7 +24,7 @@ function perso:newPerso(name, posX, posY, img)
     end
 
     function newP:move(dx, dy)
-        self.posX = self.psX + dx
+        self.posX = self.posX + dx
         self.posY = self.posY + dy
     end
     
@@ -41,7 +40,7 @@ function perso:newPerso(name, posX, posY, img)
         local distance = math.sqrt(dx * dx + dy * dy)
 
         if distance > 0.1 then
-            local speed = 20
+            local speed = 30
             local moveX = dx / distance * speed * love.timer.getDelta()
             local moveY = dy / distance * speed * love.timer.getDelta()
 
@@ -53,16 +52,26 @@ function perso:newPerso(name, posX, posY, img)
             self.index = self.index % #points + 1
             self.target = points[self.index]
         end
-        print(self.index)
+        --print(self.index)
     end
 
 
     function newP:update(dt)
         if self.hasPlan then
-            self:moveToPoint(self.target[1], self.target[2])           
+            self:moveToPoint(self.target[1], self.target[2]) 
+        else 
+            local dx = 0
+            local dy = 0
+            if love.keyboard.isDown("up") then dy = - 100 * dt end
+            if love.keyboard.isDown("down") then dy = 100 * dt end
+            if love.keyboard.isDown("left") then dx = - 100 * dt end
+            if love.keyboard.isDown("right") then dx = 100 * dt end
+            if love.keyboard.isDown("space") then txt.message = "space pressed"
+            if love.keyboard.isDown("j") then txt.message = "jump" end   
+            self:move(dx, dy)          
         end
-    end
 
+    end
 
     return newP
 end

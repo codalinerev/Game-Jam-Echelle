@@ -1,4 +1,4 @@
-perso =require "perso"
+require("perso")
 
 love.graphics.setDefaultFilter("nearest")
 love.graphics.setBackgroundColor(0.4, 0.1, 0.2)
@@ -11,9 +11,15 @@ hero = {}
 ennemi = {}
 ennemiImage = love.graphics.newImage("assets/ennemi/alien_32.png")
 heroImage = love.graphics.newImage("assets/hero/player_1_32.png")
+imageInit = love.graphics.newImage("assets/persoInit.png")
+print("init images")
 myHero = perso:newPerso("hero", 20, 20, heroImage)
+print("create myHero")
 myHero.hasPlan = false
 myEnnemi = perso:newPerso("ennemi", 100, 10, ennemiImage)
+print("create myEnnemi")
+Bob = perso:newPerso("Bob", 200, 230, imageInit)
+print("Bob a été crée!")
 print("init hero et perso")
 --print(myHero.posX)
 --
@@ -23,13 +29,17 @@ function love.load()
 end
 
 function love.update(dt)
-    if love.keyboard.isDown("up") then myHero.posY = myHero.posY - 100 * dt end
+    --[[ if love.keyboard.isDown("up") then myHero.posY = myHero.posY - 100 * dt end
     if love.keyboard.isDown("down") then myHero.posY = myHero.posY + 100 * dt end
     if love.keyboard.isDown("left") then myHero.posX = myHero.posX - 100 * dt end
     if love.keyboard.isDown("right") then myHero.posX = myHero.posX + 100 * dt end
+    if love.keyboard.isDown("space") then txt.message = "space pressed"
+    if love.keyboard.isDown("j") then txt.message = "jump" end   
+    end ]]
     
     myEnnemi:update(dt)
     --print(myEnnemi.target[2])
+    Bob:move(0.3,0.5)
 
 
 end
@@ -43,6 +53,7 @@ function love.draw()
     love.graphics.print(txt.message, txt.x, txt.y, 0, 1, 1)
     myHero:draw()
     myEnnemi:draw()
+    Bob:draw()
 end
 
 function love.keypressed(key)
