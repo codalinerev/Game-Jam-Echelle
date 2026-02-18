@@ -1,4 +1,5 @@
 require("perso")
+heroTable = require("hero")
 Perso = perso
 
 love.graphics.setDefaultFilter("nearest")
@@ -13,6 +14,9 @@ ennemi = {}
 ennemiImage = love.graphics.newImage("assets/ennemi/alien_32.png")
 heroImage = love.graphics.newImage("assets/hero/player_1_32.png")
 imageInit = love.graphics.newImage("assets/persoInit.png")
+MyHero = heroTable:newHero("MyHero", 220, 120, heroImage)
+
+
 print("init images")
 hero = Perso:newPerso("hero", 20, 20, heroImage)
 print("create myHero")
@@ -32,19 +36,13 @@ function love.load()
 end
 
 function love.update(dt)
-    --[[ if love.keyboard.isDown("up") then myHero.posY = myHero.posY - 100 * dt end
-    if love.keyboard.isDown("down") then myHero.posY = myHero.posY + 100 * dt end
-    if love.keyboard.isDown("left") then myHero.posX = myHero.posX - 100 * dt end
-    if love.keyboard.isDown("right") then myHero.posX = myHero.posX + 100 * dt end
-    if love.keyboard.isDown("space") then txt.message = "space pressed"
-    if love.keyboard.isDown("j") then txt.message = "jump" end   
-    end ]]
     if love.keyboard.isDown("space") then txt.message = "space pressed" end
     if love.keyboard.isDown("j") then txt.message = "jump" end
     hero:updateHero(dt)
     myEnnemi:update(dt)
+    MyHero:updateHero(dt)
     --print(myEnnemi.target[2])
-    Bob:move(0.3,0.5)
+    Bob:move(0.3,-0.5)
 
 
 end
@@ -59,6 +57,7 @@ function love.draw()
     hero:draw()
     myEnnemi:draw()
     Bob:draw()
+    MyHero:draw()
 end
 
 function love.keypressed(key)
