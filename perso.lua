@@ -29,7 +29,7 @@ function perso:newPerso(name, posX, posY, img)
     
     function newP:draw()
         if self.isVisible then
-            love.graphics.setColor(1, 1, 1)
+            --love.graphics.setColor(1, 1, 1)
             love.graphics.draw(self.image, self.posX, self.posY, 0, 1, 1)
             --print(self.name .. "drawn at " .. self.posX .. " , " .. self.posY)
         end
@@ -71,6 +71,7 @@ function perso:newPerso(name, posX, posY, img)
     function newP:updateHero(dt)
         local dx = 0
         local dy = 0
+        print("update hero in perso.lua!")
         if love.keyboard.isDown("up") then dy = - 100 * dt end
         if love.keyboard.isDown("down") then dy = 100 * dt end
         if love.keyboard.isDown("left") then dx = - 100 * dt end

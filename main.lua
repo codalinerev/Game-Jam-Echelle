@@ -23,26 +23,21 @@ love.graphics.setDefaultFilter("nearest")
 
 
 txt = {} --- GUI text
-txt.message = "press space to start"
+txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
 txt.x = 600
 txt.y = 200
-hero = {}
+--hero = {}
 
 ennemi = {}
 ennemiImage = love.graphics.newImage("assets/ennemi/alien_32.png")
 heroImage = love.graphics.newImage("assets/hero/player_1_32.png")
 imageInit = love.graphics.newImage("assets/persoInit.png")
-MyHero = heroTable:newHero("MyHero", 220, 120, heroImage)
+MyHero = heroTable:newHero("MyHero", 176, 495, heroImage)
 love.graphics.print("HELLO!  je commence", 100, 150, 0, 2, 2)
 
-
 print("init images")
-hero = Perso:newPerso("hero", 20, 20, heroImage)
-GUI.txt3 = MyHero.txt
-print(GUI.txt3)
---Perso.printListe()
-print(hero.name)
-hero.hasPlan = false
+GUI.txt2 = MyHero.tileIndex
+print(GUI.txt2)
 myEnnemi = Perso:newPerso("ennemi", 100, 10, ennemiImage)
 print("create myEnnemi")
 Bob = Perso:newPerso("Bob", 200, 230, imageInit)
@@ -53,33 +48,38 @@ function love.load()
 end
 
 function love.update(dt)
-    if love.keyboard.isDown("space") then txt.message = "space pressed" end
-    if love.keyboard.isDown("j") then txt.message = "jump" end
-    hero:updateHero(dt)
-    myEnnemi:update(dt)
+    txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
+    
+    --myEnnemi:update(dt)
     MyHero:updateHero(dt)
-    GUI.txt3 = MyHero.txt
-    --print(myEnnemi.target[2])
-    Bob:move(0.3,-0.5)
+    updateGUI()
+    --Bob:move(0.3,-0.5)
+    --myEnnemi:updateHero(dt)
+    
 end
 
 function love.draw()
     --love.graphics.setColor(0.8, 0.9, 1)  
     love.graphics.rectangle("fill", txt.x - 20, txt.y - 20, 200, 100)
-    love.graphics.setColor(0.2, 0.1, 0.1)
+    love.graphics.setColor(0.2, 0.5, 0.3)
     love.graphics.print(txt.message, txt.x, txt.y, 0, 1, 1)
-    love.graphics.setColor(1, 1, 1)
-    draw_map()
-    draw_GUI()
-    hero:draw()
+    --love.graphics.setColor(1, 1, 1)
+    drawGrid()
+    love.graphics.setColor(0.4, 0.4, 0.5, 0.2)
+    drawMap()
+    love.graphics.setColor(0.2, 0.2, 0.4, 1)
+    drawGUI()
+    --hero:draw()
     myEnnemi:draw()
     Bob:draw()
-    MyHero:draw()   
+    MyHero:draw()  
+    MyHero:drawGUIHero()  
     love.graphics.setColor(0.2, 0.3, 0.3)
 end
 
-function draw_map() -----------------tilesize = 32----
+function drawMap() -----------------tilesize = 32----
     local tileSize = 32
+
     for i = 1, #map1 do
         local x = ((i - 1) % 16) * tileSize
         local y = math.floor((i - 1) / 16) * tileSize
@@ -91,7 +91,16 @@ function draw_map() -----------------tilesize = 32----
     end
 end
 
-function draw_GUI()
+function drawGrid()
+    local tileSize = 32
+    for i = 1, #map1 do
+        local x = ((i - 1) % 16) * tileSize
+        local y = math.floor((i - 1) / 16) * tileSize   
+        love.graphics.rectangle("line", x, y, tileSize, tileSize)
+    end
+end
+
+function drawGUI()
     --love.graphics.setFont(GUI.font)
     love.graphics.setColor(GUI.bgColor)
     love.graphics.rectangle("fill", GUI.x - 10, GUI.y - 10, 300, 100)
@@ -101,8 +110,27 @@ function draw_GUI()
     love.graphics.print(GUI.txt3, GUI.x, GUI.y + 40)
 end
 
+function updateGUI()
+    print("type de tuile : " ..map1[MyHero.tileIndex])
+    GUI.txt2 = "Tile " .. map1[MyHero.tileIndex]  --map1[MyHero.tileIndex]
+    GUI.txt3 = "next state: " ..MyHero.nextState
+    GUI.txt1 = "state: " .. MyHero.state
+end
+
+function WhichTile(posX, posY)
+        local tileX = math.floor((posX + 16) / 32) + 1
+        local tileY = math.floor((posY + 16) / 32) + 1
+        local tileIndex = (tileY - 1) * 16 + tileX
+        return tileIndex
+    end
+
 function love.keypressed(key)
     if key == "space" then
         txt.message = "space pressed"
     end
+end
+
+function love.mouse.getPosition()
+    local x, y = love.mouse.getPosition()
+    return x, y
 end
