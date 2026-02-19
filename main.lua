@@ -32,7 +32,7 @@ ennemi = {}
 ennemiImage = love.graphics.newImage("assets/ennemi/alien_32.png")
 heroImage = love.graphics.newImage("assets/hero/player_1_32.png")
 imageInit = love.graphics.newImage("assets/persoInit.png")
-MyHero = heroTable:newHero("MyHero", 176, 495, heroImage)
+MyHero = heroTable:newHero("MyHero", 339, 460, heroImage)
 love.graphics.print("HELLO!  je commence", 100, 150, 0, 2, 2)
 
 print("init images")
@@ -77,7 +77,7 @@ function love.draw()
     love.graphics.setColor(0.2, 0.3, 0.3)
 end
 
-function drawMap() -----------------tilesize = 32----
+function drawMap() ----------------- tilesize = 32    grid 16 x 16 ----
     local tileSize = 32
 
     for i = 1, #map1 do

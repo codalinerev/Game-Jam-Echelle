@@ -15,7 +15,7 @@ function hero:newHero(name, posx, posy, img)
     newHero.txt = "Salut"
     newHero.nextPos = {posx, posy}
     newHero.hasPlan = false 
-    newHero.state = "GoLeft" -- "Jump", "Stand", "Dance", "Wave", "Climb", "Sit", "Talk", "Emote", "GoUp", "GoDown", "GoLeft", "GoRight"
+    newHero.state = "GoLeft" -- "Jump", "Stand", "Falling", "Dance", "Wave", "Climb", "Sit", "Talk", "Emote", "GoUp", "GoDown", "GoLeft", "GoRight"
     newHero.nextState = "Stand"
 
     
@@ -39,9 +39,13 @@ function hero:newHero(name, posx, posy, img)
     newHero.tileIndex = newHero:WhichTile(newHero.posX, newHero.posY)
     newHero.nextTileIndex = newHero:WhichTile(newHero.nextPos[1], newHero.nextPos[2])
     OnLadder = map1[newHero.tileIndex] == 4
-    newHero.isGrounded = map1[newHero.tileIndex]==2 or map1[newHero.tileIndex]==4
+    newHero.isGrounded = true   --map1[newHero.tileIndex]==2 or map1[newHero.tileIndex]==4
 
     -----newHero.
+    function isGrounded(posX, posY)
+        local tuileDown = map1[WhichTile(posX, posY + 32)]
+        return tuileDown == 2 or tuileDown == 4
+    end
 
     function newHero:move(dx, dy)
         self.posX = self.posX + dx
@@ -61,7 +65,7 @@ function hero:newHero(name, posx, posy, img)
         tuileLeft = map1[newHero:WhichTile(newHero.posX - 32, newHero.posY)]
         tuileRight = map1[newHero:WhichTile(newHero.posX + 32, newHero.posY)]
         dX, dY = 0, 0
-        newHero.isGrounded = map1[newHero.tileIndex]==2 or map1[newHero.tileIndex]==4
+        newHero.isGrounded = tuileDown == 2 or tuileDown == 4
         self.tileIndex = self:WhichTile(self.posX, self.posY)
         OnLadder = map1[self.tileIndex] == 4
         if love.keyboard.isDown("up") then self.nextState = "GoUp" dY = -self.speed * love.timer.getDelta() end
@@ -71,6 +75,11 @@ function hero:newHero(name, posx, posy, img)
         if love.keyboard.isDown("space") then self.txt = "space pressed" end
         if love.keyboard.isDown("j") then self.nextState = "Jump" end
         self.nextPos = {self.posX + dX, self.posY + dY}
+        if isGrounded(self.nextPos[1], self.nextPos[2]) 
+            then self.isGrounded = true 
+            else self.isGrounded = false 
+                 self.nextState = "Falling" 
+            end
         CheckNextAction(self)
         --self:checkCollision(self, nextPos[1], nextPos[2])
         --self:move(dX, dY)
@@ -87,12 +96,17 @@ function hero:newHero(name, posx, posy, img)
             if OnLadder then self:move(0, self.speed * love.timer.getDelta())
             else self.txt = "Can't go down without a ladder!" end
         elseif self.nextState == "GoLeft" then 
-            if self.isGrounded then self:move(-self.speed * love.timer.getDelta(), 0) end
+            if (self.isGrounded or OnLadder) and (isGrounded(self.nextPos[1], self.nextPos[2])) then self:move(-self.speed * love.timer.getDelta(), 0) end
         elseif self.nextState == "GoRight" then 
-            if self.isGrounded then self:move(self.speed * love.timer.getDelta(), 0) end
+            if (self.isGrounded or OnLadder) and (isGrounded(self.nextPos[1], self.nextPos[2])) then self:move(self.speed * love.timer.getDelta(), 0) end
         elseif self.nextState == "Jump" then 
             if self.isGrounded then self.txt = "Jumping!" self:move(0, -self.speed * 10 * love.timer.getDelta())end
+        elseif self.nextState == "Stand" then 
+            self.txt = "Standing still."
+        elseif self.nextState == "Falling" then self:move(0, self.speed * 10 * love.timer.getDelta())
+            self.txt = "Falling"
         end
+
 
         self.tileIndex = self:WhichTile(self.posX, self.posY)
         self.nextState = "Stand"
@@ -129,6 +143,8 @@ function hero:newHero(name, posx, posy, img)
         if tuileDown then love.graphics.print("Down: " .. tuileDown, 210, 130) end
         if tuileLeft then love.graphics.print("Left: " .. tuileLeft, 210, 150) end
         if tuileRight then love.graphics.print("Right: " .. tuileRight, 210, 170) end
+        love.graphics.print("is grounded: " .. tostring(self.isGrounded), 210, 190)
+        love.graphics.print("On ladder: " .. tostring(OnLadder), 210, 210)
     end
 
     return newHero
