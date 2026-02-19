@@ -1,9 +1,14 @@
 require("perso")
+require ("map1")
+tuiles = {}
+tuiles[1] = love.graphics.newImage("assets/terrain/greenTexture.png")
+tuiles[2] = love.graphics.newImage("assets/terrain/coffeeBeans.png")
 heroTable = require("hero")
 Perso = perso
 
 love.graphics.setDefaultFilter("nearest")
 love.graphics.setBackgroundColor(0.4, 0.1, 0.2)
+
 
 txt = {}
 txt.message = "press space to start"
@@ -48,6 +53,7 @@ function love.update(dt)
 end
 
 function love.draw()
+    draw_map()
     love.graphics.setColor(0.8, 0.9, 1)
     love.graphics.print("HELLO!  je commence", 100, 150, 0, 2, 2)
     
@@ -58,6 +64,19 @@ function love.draw()
     myEnnemi:draw()
     Bob:draw()
     MyHero:draw()
+end
+
+function draw_map() -----------------tilesize = 32----
+    local tileSize = 32
+    for i = 1, #map1 do
+        local x = ((i - 1) % 16) * tileSize
+        local y = math.floor((i - 1) / 16) * tileSize
+        print(map1[i])
+        local j = map1[i]
+        if j == 1 or j == 2 then love.graphics.draw(tuiles[j], x, y)     
+        else  love.graphics.draw(tuiles[1], x, y)
+        end
+    end
 end
 
 function love.keypressed(key)
