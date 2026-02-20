@@ -7,20 +7,34 @@ function printListe()
     end
 end
 
-function perso:newPerso(name, posX, posY, img)
+function perso:newPerso(name, posX, posY, img, plan)
     table.insert(listePerso, name)
     local newP = {}
     newP.name = name
     newP.posX = posX
     newP.posY = posY
-    newP.hasPlan = true
-    points = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
-    newP.target = points[1]
+    
+    points1 = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
+    points2 = {{70, 180}, {555, 180}}
+    points3 = {{10, 470}, {560, 470}}
+    newP.points = {}
+
+    if plan == 0 then newP.hasPlan = false
+    else  newP.hasPlan = true
+        if plan == 1 then newP.points = points1 end
+        if plan == 2 then newP.points = points2 end 
+        if plan == 3 then newP.points = points3 end
+        print(newP.name .. " has plan " .. plan) 
+        newP.posX = newP.points[1][1]
+        newP.posY = newP.points[1][2]
+    end
+
+    newP.target = newP.points[2]
     newP.ind = 1
     newP.speed = 0
     newP.isVisible = true
     print("create new personnage: " .. newP.name)
-
+    
     if img then 
         newP.image = img
     else
@@ -46,7 +60,7 @@ function perso:newPerso(name, posX, posY, img)
         local distance = math.sqrt(dx * dx + dy * dy)
 
         if distance > 0.1 then
-            local speed = 30
+            local speed = 50
             local moveX = dx / distance * speed * love.timer.getDelta()
             local moveY = dy / distance * speed * love.timer.getDelta()
 
@@ -55,8 +69,8 @@ function perso:newPerso(name, posX, posY, img)
         else -- Arrivé à la cible
             self.posX = pointX
             self.posY = pointY --next target
-            self.ind = self.ind % #points + 1
-            self.target = points[self.ind]
+            self.ind = self.ind % #newP.points + 1
+            self.target = newP.points[self.ind]
         end
         --print(self.index)
     end

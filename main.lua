@@ -8,7 +8,7 @@ tuiles[4] = love.graphics.newImage("assets/terrain/echelle.png")
 
 GUI = {}
 --GUI.font = love.graphics.newFont("assets/PressStart2P-Regular.ttf", 16)
-GUI.color = {1, 0.2, 0.5}
+GUI.color = {0.5, 0.2, 0.5}
 GUI.bgColor = {0.2, 0.2, 0.2, 0.8}
 GUI.txt1 = "Press SPACE to start"
 GUI.txt2 = "blablabla!"
@@ -25,7 +25,7 @@ love.graphics.setDefaultFilter("nearest")
 txt = {} --- GUI text
 txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
 txt.x = 600
-txt.y = 200
+txt.y = 250
 --hero = {}
 
 ennemi = {}
@@ -38,9 +38,10 @@ love.graphics.print("HELLO!  je commence", 100, 150, 0, 2, 2)
 print("init images")
 GUI.txt2 = MyHero.tileIndex
 print(GUI.txt2)
-myEnnemi = Perso:newPerso("ennemi", 100, 10, ennemiImage)
+myEnnemi = Perso:newPerso("ennemi", 70, 180, ennemiImage, 2)
 print("create myEnnemi")
-Bob = Perso:newPerso("Bob", 200, 230, imageInit)
+Bob = Perso:newPerso("Bob", 60, 470, imageInit, 3)
+Bob.speed = 40
 print("Bob a été crée!")
 print("init hero et perso")
 
@@ -49,9 +50,9 @@ end
 
 function love.update(dt)
     txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
-    
-    --myEnnemi:update(dt)
+    myEnnemi:update(dt)
     MyHero:updateHero(dt)
+    Bob:update(dt)
     updateGUI()
     --Bob:move(0.3,-0.5)
     --myEnnemi:updateHero(dt)
@@ -59,22 +60,22 @@ function love.update(dt)
 end
 
 function love.draw()
-    --love.graphics.setColor(0.8, 0.9, 1)  
+    love.graphics.setColor(0.8, 0.9, 1)  
     love.graphics.rectangle("fill", txt.x - 20, txt.y - 20, 200, 100)
     love.graphics.setColor(0.2, 0.5, 0.3)
     love.graphics.print(txt.message, txt.x, txt.y, 0, 1, 1)
-    --love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(1, 1, 1)
     drawGrid()
-    love.graphics.setColor(0.4, 0.4, 0.5, 0.2)
+    --love.graphics.setColor(0.4, 0.4, 0.5, 0.2)
     drawMap()
-    love.graphics.setColor(0.2, 0.2, 0.4, 1)
-    drawGUI()
+    --love.graphics.setColor(0.2, 0.2, 0.4, 1)   
     --hero:draw()
     myEnnemi:draw()
     Bob:draw()
     MyHero:draw()  
     MyHero:drawGUIHero()  
     love.graphics.setColor(0.2, 0.3, 0.3)
+    drawGUI()
 end
 
 function drawMap() ----------------- tilesize = 32    grid 16 x 16 ----
@@ -108,10 +109,11 @@ function drawGUI()
     love.graphics.print(GUI.txt1, GUI.x, GUI.y)
     love.graphics.print(GUI.txt2, GUI.x, GUI.y + 20)
     love.graphics.print(GUI.txt3, GUI.x, GUI.y + 40)
+    love.graphics.setColor(1, 1, 1)
 end
 
 function updateGUI()
-    print("type de tuile : " ..map1[MyHero.tileIndex])
+    --print("type de tuile : " ..map1[MyHero.tileIndex])
     GUI.txt2 = "Tile " .. map1[MyHero.tileIndex]  --map1[MyHero.tileIndex]
     GUI.txt3 = "next state: " ..MyHero.nextState
     GUI.txt1 = "state: " .. MyHero.state

@@ -22,9 +22,7 @@ function hero:newHero(name, posx, posy, img)
 
     function newHero:WhichTile(posX, posY)
         local tileX = math.floor((posX + 16) / 32) + 1
-        --print(tileX)
         local tileY = math.floor((posY + 16) / 32) + 1
-        --print(tileY)
         local tileIndex = (tileY - 1) * 16 + tileX
         return tileIndex
     end
@@ -93,7 +91,7 @@ function hero:newHero(name, posx, posy, img)
             if OnLadder then self:move(0, -self.speed * love.timer.getDelta())
             else self.txt = "Can't go up without a ladder!" end
         elseif self.nextState == "GoDown" then 
-            if OnLadder then self:move(0, self.speed * love.timer.getDelta())
+            if OnLadder or tuileDown == 4 then self:move(0, self.speed * love.timer.getDelta())
             else self.txt = "Can't go down without a ladder!" end
         elseif self.nextState == "GoLeft" then 
             if (self.isGrounded or OnLadder) and (isGrounded(self.nextPos[1], self.nextPos[2])) then self:move(-self.speed * love.timer.getDelta(), 0) end
@@ -134,17 +132,17 @@ function hero:newHero(name, posx, posy, img)
     
     function newHero:drawGUIHero()
         love.graphics.setColor(1, 1, 1)
-        love.graphics.print("Hero: " .. self.name, 10, 10)
-        love.graphics.print("Position: (" .. math.floor(self.posX) .. ", " .. math.floor(self.posY) .. ")", 10, 30)
-        love.graphics.print("Tile: " .. self.tileIndex, 10, 50)
-        love.graphics.print("State: " .. self.state, 10, 70)
-        love.graphics.print("Next State: " .. self.nextState, 10, 90)
-        if tuileUp then love.graphics.print("Up: " .. tuileUp, 210, 110) end
-        if tuileDown then love.graphics.print("Down: " .. tuileDown, 210, 130) end
-        if tuileLeft then love.graphics.print("Left: " .. tuileLeft, 210, 150) end
-        if tuileRight then love.graphics.print("Right: " .. tuileRight, 210, 170) end
-        love.graphics.print("is grounded: " .. tostring(self.isGrounded), 210, 190)
-        love.graphics.print("On ladder: " .. tostring(OnLadder), 210, 210)
+        love.graphics.print("Hero: " .. self.name, 590, 20)
+        love.graphics.print("Position: (" .. math.floor(self.posX) .. ", " .. math.floor(self.posY) .. ")", 590, 35)
+        love.graphics.print("Tile: " .. self.tileIndex, 590, 50)
+        love.graphics.print("State: " .. self.state, 590, 65)
+        love.graphics.print("Next State: " .. self.nextState, 590, 80)
+        if tuileUp then love.graphics.print("Up: " .. tuileUp, 590, 100) end
+        if tuileDown then love.graphics.print("Down: " .. tuileDown, 590, 115) end
+        if tuileLeft then love.graphics.print("Left: " .. tuileLeft, 590, 130) end
+        if tuileRight then love.graphics.print("Right: " .. tuileRight, 590, 145) end
+        love.graphics.print("is grounded: " .. tostring(self.isGrounded), 590, 165)
+        love.graphics.print("On ladder: " .. tostring(OnLadder), 590, 180)
     end
 
     return newHero
