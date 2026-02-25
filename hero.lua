@@ -2,9 +2,32 @@
 hero = {}
 
 hero.txt = ""
+sfxWalk = love.audio.newSource("assets/sons/ploplop.wav", "static")
+sfxGoUp = love.audio.newSource("assets/sons/pi.wav", "static")
+sfxGoDown = love.audio.newSource("assets/sons/boo.wav", "static")
+sfxFalling = love.audio.newSource("assets/sons/pim.wav", "static")
+bruitPas = love.audio.newSource("assets/sons/bruitPas.wav", "static")
+walk1 = love.graphics.newImage("assets/hero/walk1.png")
+walk2 = love.graphics.newImage("assets/hero/walk2.png")
+stand = love.graphics.newImage("assets/hero/stay.png")
+walkLeft1 = love.graphics.newImage("assets/hero/walkLeft1.png")
+walkLeft2 = love.graphics.newImage("assets/hero/walkLeft2.png")
+walkLeft3 = love.graphics.newImage("assets/hero/walkLeft3.png")
+walkRight1 = love.graphics.newImage("assets/hero/walkRight1.png")
+walkRight2 = love.graphics.newImage("assets/hero/walkRight2.png")
+walkRight3 = love.graphics.newImage("assets/hero/walkRight3.png")
+joy1 = love.graphics.newImage("assets/hero/joyArmsUp.png")
+joy2 = love.graphics.newImage("assets/hero/joyCalm.png")
+lookRight = love.graphics.newImage("assets/hero/lookRight.png")
+lookLeft = love.graphics.newImage("assets/hero/lookLeft.png")
+framesWalk = {} 
+framesWalk[1] = walk1
+framesWalk[2] = stand
+framesWalk[3] = walk2
 
 function hero:newHero(name, posx, posy, img)
     local newHero = {}
+   
     setmetatable(newHero, self)
     self.__index = self
     newHero.name = name
@@ -12,13 +35,14 @@ function hero:newHero(name, posx, posy, img)
     newHero.posY = posy
     newHero.image = img
     newHero.currentFrame = 1
+    newHero.nextFrame = newHero.currentFrame
+    newHero.isAnim = true
+    newHero.activeAnim = "walk"
     newHero.txt = "Salut"
     newHero.nextPos = {posx, posy}
     newHero.hasPlan = false 
     newHero.state = "GoLeft" -- "Jump", "Stand", "Falling", "Dance", "Wave", "Climb", "Sit", "Talk", "Emote", "GoUp", "GoDown", "GoLeft", "GoRight"
-    newHero.nextState = "Stand"
-
-    
+    newHero.nextState = "Stand"  
 
     function newHero:WhichTile(posX, posY)
         local tileX = math.floor((posX + 16) / 32) + 1
@@ -58,18 +82,19 @@ function hero:newHero(name, posx, posy, img)
     end
 
     function newHero:updateHero(dt)
-        tuileUp = map1[newHero:WhichTile(newHero.posX, newHero.posY - 32)]
-        tuileDown = map1[newHero:WhichTile(newHero.posX, newHero.posY + 32)]
-        tuileLeft = map1[newHero:WhichTile(newHero.posX - 32, newHero.posY)]
-        tuileRight = map1[newHero:WhichTile(newHero.posX + 32, newHero.posY)]
+        if newHero.isAnim then newHero:animate() end 
+        tuileUp = map1[newHero:WhichTile(newHero.posX, newHero.posY - 27)]
+        tuileDown = map1[newHero:WhichTile(newHero.posX, newHero.posY + 27)]
+        tuileLeft = map1[newHero:WhichTile(newHero.posX - 27, newHero.posY)]
+        tuileRight = map1[newHero:WhichTile(newHero.posX + 27, newHero.posY)]
         dX, dY = 0, 0
         newHero.isGrounded = tuileDown == 2 or tuileDown == 4
         self.tileIndex = self:WhichTile(self.posX, self.posY)
         OnLadder = map1[self.tileIndex] == 4
-        if love.keyboard.isDown("up") then self.nextState = "GoUp" dY = -self.speed * love.timer.getDelta() end
-        if love.keyboard.isDown("down") then self.nextState = "GoDown" dY = self.speed * love.timer.getDelta() end
-        if love.keyboard.isDown("left") then self.nextState = "GoLeft" dX = -self.speed * love.timer.getDelta() end
-        if love.keyboard.isDown("right") then self.nextState = "GoRight" dX = self.speed * love.timer.getDelta() end
+        if love.keyboard.isDown("up") then self.nextState = "GoUp" dY = -self.speed * love.timer.getDelta() sfxGoUp:play() end
+        if love.keyboard.isDown("down") then self.nextState = "GoDown" dY = self.speed * love.timer.getDelta() sfxGoDown:play() end
+        if love.keyboard.isDown("left") then self.nextState = "GoLeft" dX = -self.speed * love.timer.getDelta() sfxWalk:play() end
+        if love.keyboard.isDown("right") then self.nextState = "GoRight" dX = self.speed * love.timer.getDelta() sfxWalk:play() end
         if love.keyboard.isDown("space") then self.txt = "space pressed" end
         if love.keyboard.isDown("j") then self.nextState = "Jump" end
         self.nextPos = {self.posX + dX, self.posY + dY}
@@ -77,6 +102,7 @@ function hero:newHero(name, posx, posy, img)
             then self.isGrounded = true 
             else self.isGrounded = false 
                  self.nextState = "Falling" 
+                 sfxFalling:play()
             end
         CheckNextAction(self)
         --self:checkCollision(self, nextPos[1], nextPos[2])
@@ -88,31 +114,43 @@ function hero:newHero(name, posx, posy, img)
             self.txt = "Can't move outside the map!"
             return
         elseif self.nextState == "GoUp" then 
-            if OnLadder then self:move(0, -self.speed * love.timer.getDelta())
+            if OnLadder then self:move(0, -self.speed * love.timer.getDelta()) bruitPas:play()
             else self.txt = "Can't go up without a ladder!" end
         elseif self.nextState == "GoDown" then 
-            if OnLadder or tuileDown == 4 then self:move(0, self.speed * love.timer.getDelta())
+            if OnLadder or tuileDown == 4 then self:move(0, self.speed * love.timer.getDelta()) 
             else self.txt = "Can't go down without a ladder!" end
         elseif self.nextState == "GoLeft" then 
-            if (self.isGrounded or OnLadder) and (isGrounded(self.nextPos[1], self.nextPos[2])) then self:move(-self.speed * love.timer.getDelta(), 0) end
+            if (self.isGrounded or OnLadder) and (isGrounded(self.nextPos[1], self.nextPos[2])) then self:move(-self.speed * love.timer.getDelta(), 0) 
+            bruitPas:play()   end
         elseif self.nextState == "GoRight" then 
-            if (self.isGrounded or OnLadder) and (isGrounded(self.nextPos[1], self.nextPos[2])) then self:move(self.speed * love.timer.getDelta(), 0) end
+            if (self.isGrounded or OnLadder) and (isGrounded(self.nextPos[1], self.nextPos[2])) then self:move(self.speed * love.timer.getDelta(), 0)
+            bruitPas:play()   end
         elseif self.nextState == "Jump" then 
-            if self.isGrounded then self.txt = "Jumping!" self:move(0, -self.speed * 10 * love.timer.getDelta())end
+            if self.isGrounded then self.txt = "Jumping!"
+                                    self.nextState = "Jumped" 
+                                    sfxGoUp:play()                              
+                                end
+        elseif self.nextState == "Jumped" then 
+            --self:move(0, 30)
+            self.txt = "Landing from jump."  
+            love.timer.sleep(1)                    
         elseif self.nextState == "Stand" then 
-            self.txt = "Standing still."
+            self.txt = "Standing still." 
         elseif self.nextState == "Falling" then self:move(0, self.speed * 10 * love.timer.getDelta())
             self.txt = "Falling"
         end
 
-
+        self.state = self.nextState
         self.tileIndex = self:WhichTile(self.posX, self.posY)
-        self.nextState = "Stand"
+        if self.nextState == "Jump" then self.nextState = "Jumped"
+           else self.nextState = "Stand"
+        end
     end 
+
     newHero.draw = function()
         --love.graphics.setColor(0.5, 1, 0.5)
 
-        love.graphics.draw(newHero.image, newHero.posX, newHero.posY)
+        love.graphics.draw(newHero.image, newHero.posX, newHero.posY, 0, 2, 2)
     end
 
     function newHero.checkCollision(self, nextPosX, nextPosY)
@@ -143,6 +181,19 @@ function hero:newHero(name, posx, posy, img)
         if tuileRight then love.graphics.print("Right: " .. tuileRight, 590, 145) end
         love.graphics.print("is grounded: " .. tostring(self.isGrounded), 590, 165)
         love.graphics.print("On ladder: " .. tostring(OnLadder), 590, 180)
+    end
+
+    function newHero:animate()
+        newHero.nextFrame = newHero.nextFrame + 10* love.timer.getDelta()
+        if math.floor(newHero.nextFrame) > newHero.currentFrame then newHero.currentFrame = math.floor(newHero.nextFrame) end
+        if newHero.currentFrame > #framesWalk then newHero.currentFrame = 1 newHero.nextFrame = 1 end
+        newHero.image = framesWalk[newHero.currentFrame]   
+    end
+
+    function animWalk()
+        frame = walk[currentFrame]
+        --currentFrame = 
+        --nextFrame = 
     end
 
     return newHero

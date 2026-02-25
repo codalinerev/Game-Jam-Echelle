@@ -5,6 +5,7 @@ tuiles[1] = love.graphics.newImage("assets/terrain/greenTexture.png")
 tuiles[3] = love.graphics.newImage("assets/terrain/coffeeBeans.png")
 tuiles[2] = love.graphics.newImage("assets/terrain/bricks.png")
 tuiles[4] = love.graphics.newImage("assets/terrain/echelle.png")
+sfxOPerdon = love.audio.newSource("assets/sons/opardon.wav", "static")
 
 GUI = {}
 --GUI.font = love.graphics.newFont("assets/PressStart2P-Regular.ttf", 16)
@@ -26,12 +27,11 @@ txt = {} --- GUI text
 txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
 txt.x = 600
 txt.y = 250
---hero = {}
 
 ennemi = {}
-ennemiImage = love.graphics.newImage("assets/ennemi/alien_32.png")
-heroImage = love.graphics.newImage("assets/hero/player_1_32.png")
-imageInit = love.graphics.newImage("assets/persoInit.png")
+ennemiImage = love.graphics.newImage("assets/ennemi/greenEnemy.png")
+heroImage = love.graphics.newImage("assets/hero/joyCalm.png")
+imageInit = love.graphics.newImage("assets/ennemi/ball1.png")
 MyHero = heroTable:newHero("MyHero", 339, 460, heroImage)
 love.graphics.print("HELLO!  je commence", 100, 150, 0, 2, 2)
 
@@ -42,21 +42,20 @@ myEnnemi = Perso:newPerso("ennemi", 70, 180, ennemiImage, 2)
 print("create myEnnemi")
 Bob = Perso:newPerso("Bob", 60, 470, imageInit, 3)
 Bob.speed = 40
+Bob.isAnim = true
 print("Bob a été crée!")
 print("init hero et perso")
-
+Perso:printListe() 
 function love.load() 
 end
 
 function love.update(dt)
     txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
+    updateScore()
     myEnnemi:update(dt)
     MyHero:updateHero(dt)
     Bob:update(dt)
-    updateGUI()
-    --Bob:move(0.3,-0.5)
-    --myEnnemi:updateHero(dt)
-    
+    updateGUI()   
 end
 
 function love.draw()
@@ -66,10 +65,7 @@ function love.draw()
     love.graphics.print(txt.message, txt.x, txt.y, 0, 1, 1)
     love.graphics.setColor(1, 1, 1)
     drawGrid()
-    --love.graphics.setColor(0.4, 0.4, 0.5, 0.2)
     drawMap()
-    --love.graphics.setColor(0.2, 0.2, 0.4, 1)   
-    --hero:draw()
     myEnnemi:draw()
     Bob:draw()
     MyHero:draw()  
@@ -136,3 +132,15 @@ function love.mouse.getPosition()
     local x, y = love.mouse.getPosition()
     return x, y
 end
+
+function updateScore() --check collision with hero and ennemi
+    for i, pers in ipairs(listePerso) do
+       local dx = MyHero.posX - pers.posX
+        local dy = MyHero.posY - pers.posY
+        local distance = math.sqrt(dx * dx + dy * dy)
+        if distance < 20 then
+            txt.message = "Collision detected with " .. pers.name
+            sfxOPerdon:play()
+        end 
+    end
+end    

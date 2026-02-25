@@ -1,19 +1,26 @@
 perso = {}
 listePerso = {}
-function printListe()
-    print("Liste des personnages:")
-    for i, name in ipairs(listePerso) do
-        print(i .. ": " .. name)
-    end
-end
+sfxComida = love.audio.newSource("assets/sons/comida.wav", "static")
+ball1 = love.graphics.newImage("assets/ennemi/ball1.png")
+ball2 = love.graphics.newImage("assets/ennemi/ball2.png")
+ball3 = love.graphics.newImage("assets/ennemi/ball3.png")
+ball4 = love.graphics.newImage("assets/ennemi/ball4.png")
+ball5 = love.graphics.newImage("assets/ennemi/ball5.png")
+ball6 = love.graphics.newImage("assets/ennemi/ball6.png")
+ball7 = love.graphics.newImage("assets/ennemi/ball7.png")
+ball8 = love.graphics.newImage("assets/ennemi/ball8.png")
+framesBall = {}
+framesBall = {ball1, ball2, ball3, ball4, ball5, ball6, ball7, ball8 }
+currentFrame = 1
+nextFrame = 1
 
 function perso:newPerso(name, posX, posY, img, plan)
-    table.insert(listePerso, name)
+    
     local newP = {}
     newP.name = name
     newP.posX = posX
     newP.posY = posY
-    
+        
     points1 = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
     points2 = {{70, 180}, {555, 180}}
     points3 = {{10, 470}, {560, 470}}
@@ -33,6 +40,7 @@ function perso:newPerso(name, posX, posY, img, plan)
     newP.ind = 1
     newP.speed = 0
     newP.isVisible = true
+    newP.isAnim = false
     print("create new personnage: " .. newP.name)
     
     if img then 
@@ -67,6 +75,7 @@ function perso:newPerso(name, posX, posY, img, plan)
             self.posX = self.posX + moveX
             self.posY = self.posY + moveY
         else -- Arrivé à la cible
+            sfxComida:play()
             self.posX = pointX
             self.posY = pointY --next target
             self.ind = self.ind % #newP.points + 1
@@ -80,8 +89,19 @@ function perso:newPerso(name, posX, posY, img, plan)
         if self.hasPlan then
             self:moveToPoint(self.target[1], self.target[2])                      
         end
+        if newP.isAnim then self.animate() end
 
     end
+
+    function newP:animate()
+        print("animation ennemy")
+        nextFrame = nextFrame + 3 * love.timer.getDelta()
+        if math.floor(nextFrame) > currentFrame then currentFrame = math.floor(nextFrame) end
+        if currentFrame > #framesBall then currentFrame = 1 nextFrame = 1 end
+        newP.image = framesBall[currentFrame]
+
+    end
+
     function newP:updateHero(dt)
         local dx = 0
         local dy = 0
@@ -93,7 +113,15 @@ function perso:newPerso(name, posX, posY, img, plan)
         self:move(dx, dy)
     end
 
+    table.insert(listePerso, newP)
     return newP
+end
+
+function perso:printListe()
+    print("Liste des personnages:")
+    for i, pers in ipairs(listePerso) do
+        print(pers.name.." ")
+    end
 end
 
 return perso
