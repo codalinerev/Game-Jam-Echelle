@@ -14,12 +14,13 @@ framesBall = {ball1, ball2, ball3, ball4, ball5, ball6, ball7, ball8 }
 currentFrame = 1
 nextFrame = 1
 
-function perso:newPerso(name, posX, posY, img, plan)
+function perso:newPerso(name, posX, posY, img, plan, madimg)
     
     local newP = {}
     newP.name = name
     newP.posX = posX
     newP.posY = posY
+    if madimg then newP.madimg = madimg else newP.badimg = img end
         
     points1 = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
     points2 = {{70, 180}, {555, 180}}
@@ -41,6 +42,9 @@ function perso:newPerso(name, posX, posY, img, plan)
     newP.speed = 0
     newP.isVisible = true
     newP.isAnim = false
+    newP.giveDamage = 0.1
+    newP.collisions = 0
+    newP.badTemper = false
     print("create new personnage: " .. newP.name)
     
     if img then 
@@ -52,7 +56,7 @@ function perso:newPerso(name, posX, posY, img, plan)
     function newP:draw()
         if self.isVisible then
             --love.graphics.setColor(1, 1, 1)
-            love.graphics.draw(self.image, self.posX, self.posY, 0, 1, 1)
+            love.graphics.draw(self.image, self.posX, self.posY, 0, 2, 2)
             --print(self.name .. "drawn at " .. self.posX .. " , " .. self.posY)
         end
     end
@@ -90,12 +94,16 @@ function perso:newPerso(name, posX, posY, img, plan)
             self:moveToPoint(self.target[1], self.target[2])                      
         end
         if newP.isAnim then self.animate() end
-
+        if self.collisions > 20 then 
+            if self.badTemper then newP:goMad() 
+                              else self.badTemper = true 
+                            end 
+        end                                    
     end
 
     function newP:animate()
-        print("animation ennemy")
-        nextFrame = nextFrame + 3 * love.timer.getDelta()
+        --print("animation ennemy")
+        nextFrame = nextFrame + 6 * love.timer.getDelta()
         if math.floor(nextFrame) > currentFrame then currentFrame = math.floor(nextFrame) end
         if currentFrame > #framesBall then currentFrame = 1 nextFrame = 1 end
         newP.image = framesBall[currentFrame]
@@ -113,6 +121,10 @@ function perso:newPerso(name, posX, posY, img, plan)
         self:move(dx, dy)
     end
 
+    function newP:goMad()
+    newP.giveDamage = 1
+    end
+
     table.insert(listePerso, newP)
     return newP
 end
@@ -123,5 +135,7 @@ function perso:printListe()
         print(pers.name.." ")
     end
 end
+
+
 
 return perso

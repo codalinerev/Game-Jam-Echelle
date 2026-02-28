@@ -20,6 +20,11 @@ joy1 = love.graphics.newImage("assets/hero/joyArmsUp.png")
 joy2 = love.graphics.newImage("assets/hero/joyCalm.png")
 lookRight = love.graphics.newImage("assets/hero/lookRight.png")
 lookLeft = love.graphics.newImage("assets/hero/lookLeft.png")
+cadeaux = {}
+coin = love.graphics.newImage("assets/GUI/coin.png")
+pomme = love.graphics.newImage("assets/terrain/pommeRed.png")
+cadeaux[1] = pomme  --tuile 5 map
+cadeaux[2] = coin  --tuile 6 map
 framesWalk = {} 
 framesWalk[1] = walk1
 framesWalk[2] = stand
@@ -42,7 +47,9 @@ function hero:newHero(name, posx, posy, img)
     newHero.nextPos = {posx, posy}
     newHero.hasPlan = false 
     newHero.state = "GoLeft" -- "Jump", "Stand", "Falling", "Dance", "Wave", "Climb", "Sit", "Talk", "Emote", "GoUp", "GoDown", "GoLeft", "GoRight"
-    newHero.nextState = "Stand"  
+    newHero.nextState = "Stand" 
+    newHero.pommes = 0 
+    newHero.coins = 0
 
     function newHero:WhichTile(posX, posY)
         local tileX = math.floor((posX + 16) / 32) + 1
@@ -107,6 +114,7 @@ function hero:newHero(name, posx, posy, img)
         CheckNextAction(self)
         --self:checkCollision(self, nextPos[1], nextPos[2])
         --self:move(dX, dY)
+
     end
 
     function CheckNextAction(self)
