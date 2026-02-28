@@ -1,73 +1,14 @@
 require("perso")
 require ("map1")
-tuiles = {}
-tuiles[1] = love.graphics.newImage("assets/terrain/black.png")
-tuiles[3] = love.graphics.newImage("assets/terrain/coffeeBeans.png")
-tuiles[2] = love.graphics.newImage("assets/terrain/brique4.png")
-tuiles[4] = love.graphics.newImage("assets/terrain/echelle7.png")
-sfxOPerdon = love.audio.newSource("assets/sons/opardon.wav", "static")
-heart = love.graphics.newImage("assets/GUI/coeur.png")
-coin = love.graphics.newImage("assets/GUI/coin.png")
-pomme = love.graphics.newImage("assets/terrain/pommeRed.png")
-tuiles[5] = pomme
-tuiles[6] = coin
-spawnPositions = {}
-spawnPositions = {5, 25, 30, 78}
+require("initGame")
 
-
-GUI = {}
---GUI.font = love.graphics.newFont("assets/PressStart2P-Regular.ttf", 16)
-GUI.color = {0.5, 0.2, 0.5}
-GUI.bgColor = {0.2, 0.2, 0.2, 0.8}
-GUI.txt1 = "Press SPACE to start"
-GUI.txt2 = "blablabla!"
-
-GUI.x = 600
-GUI.y = 450
-heroTable = require("hero")
-Perso = perso
-score = 0
-pdv = 5
-GUI.score = score
-GUI.pdv = pdv
-pommes = 0
-coins = 0
-degats = 0
-isGameOver = false
-
-love.graphics.setDefaultFilter("nearest")
---love.graphics.setBackgroundColor(0.4, 0.3, 0.2)
-
-
-txt = {} --- GUI text
-txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
-txt.x = 600
-txt.y = 250
-
-ennemi = {}
-ennemiImage = love.graphics.newImage("assets/ennemi/greenEnemy.png")
-ennemimad = love.graphics.newImage("assets/ennemi/enemyGmad.png")
-heroImage = love.graphics.newImage("assets/hero/joyCalm.png")
-imageInit = love.graphics.newImage("assets/ennemi/ball1.png")
-MyHero = heroTable:newHero("MyHero", 339, 460, heroImage)
-love.graphics.print("HELLO!  je commence", 100, 150, 0, 2, 2)
-
-print("init images")
-GUI.txt2 = MyHero.tileIndex
-print(GUI.txt2)
-myEnnemi = Perso:newPerso("ennemi", 70, 180, ennemiImage, 2)
-print("create myEnnemi")
-Bob = Perso:newPerso("Bob", 60, 470, imageInit, 3)
-Bob.speed = 40
-Bob.isAnim = true
-print("Bob a été crée!")
-print("init hero et perso")
-Perso:printListe() 
 function love.load() 
+    initGame()
+    print("init game")
 end
 
 function love.update(dt)
-    txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
+    --txt.message = "mouse pos: "..love.mouse.getX() .. " , " .. love.mouse.getY()
     if pommes == 0 then spawnPommes() end
     if coins == 0 then spawnCoins() end
     updateScore()
@@ -75,27 +16,26 @@ function love.update(dt)
     MyHero:updateHero(dt)
     Bob:update(dt)
     updateGUI()
-    if degats > 100 then isGameOver = true   end 
+    if pdv < 0 then isGameOver = true  end 
 end
 
 function love.draw()
     if isGameOver then drawGameOver()
-    else drawGame()
-    end
+    else drawGame() end
 end
 
 function drawGame()
-    love.graphics.setColor(0.8, 0.9, 1)  
-    love.graphics.rectangle("fill", txt.x - 20, txt.y - 20, 200, 100)
-    love.graphics.setColor(0.2, 0.5, 0.3)
-    love.graphics.print(txt.message, txt.x, txt.y, 0, 1, 1)
+    --love.graphics.setColor(0.8, 0.9, 1)  
+    --love.graphics.rectangle("fill", txt.x - 20, txt.y - 20, 200, 100)
+    --love.graphics.setColor(0.2, 0.5, 0.3)
+    --love.graphics.print(txt.message, txt.x, txt.y, 0, 1, 1)
     love.graphics.setColor(1, 1, 1)
     drawGrid()
     drawMap()
     myEnnemi:draw()
     Bob:draw()
     MyHero:draw()  
-    MyHero:drawGUIHero()  
+    --MyHero:drawGUIHero()  
     love.graphics.setColor(0.2, 0.3, 0.3)
     drawGUI()
 end
@@ -127,15 +67,24 @@ end
 function drawGUI()
     --love.graphics.setFont(GUI.font)
     love.graphics.setColor(GUI.bgColor)
-    love.graphics.rectangle("fill", GUI.x - 10, GUI.y - 10, 300, 100)
+    love.graphics.rectangle("fill", 530, 20, 250, 450)
     love.graphics.setColor(GUI.color)
-    love.graphics.print(GUI.txt1, GUI.x, GUI.y)
-    love.graphics.print(GUI.txt2, GUI.x, GUI.y + 20)
-    love.graphics.print(GUI.txt3, GUI.x, GUI.y + 40)
-    love.graphics.draw(heart, 590, 120, 0, 2, 2)
-    love.graphics.print("SCORE "..score, 650, 420)
-    love.graphics.draw(pomme, 610, 390, 0, 2, 2)
-    love.graphics.draw(coin, 680, 330, 0, 2, 2)
+    --love.graphics.print(GUI.txt1, GUI.x, GUI.y)
+    --love.graphics.print(GUI.txt2, GUI.x, GUI.y + 20)
+    --love.graphics.print(GUI.txt3, GUI.x, GUI.y + 40)
+
+        --, 0, 2, 2)
+    local i = math.floor(pdv / 20) 
+    print ("i: "..i)
+    if i > 1 then for j = 1, i do love.graphics.draw(heart, 550 + j * 35, 50) end end
+    love.graphics.draw(heart, 550, 50)
+    love.graphics.print("SCORE "..score, 560, 430)
+    love.graphics.print("pdv: "..pdv, 550, 370)
+    love.graphics.print("degats: "..degats, 550, 320)
+    love.graphics.draw(pomme, 550, 150, 0, 2, 2)
+    love.graphics.print(MyHero.pommes, 590, 220)
+    love.graphics.draw(coin, 650, 150, 0, 2, 2)
+    love.graphics.print(MyHero.coins, 680, 220)
     love.graphics.setColor(1, 1, 1)
 end
 
@@ -156,8 +105,8 @@ function WhichTile(posX, posY)
     end
 
 function love.keypressed(key)
-    if key == "space" then
-        txt.message = "space pressed"
+    if isGameOver and key == "p" then
+        initGame()
     end
 end
 
@@ -173,30 +122,44 @@ function updateScore() --check collision with hero and ennemi
         local distance = math.sqrt(dx * dx + dy * dy)
         if distance < 20 then
             txt.message = "Collision detected with " .. pers.name
-            degats = degats + pers.giveDamage       
+            pers.badTemper = true
+            degats = degats + pers.giveDamage
+            pdv = pdv - pers.giveDamage       
             sfxOPerdon:play()
             pers.collisions = pers.collisions + 1
         end 
     end
-    if map1[MyHero.tileIndex] == 5 then pommes = pommes + 1   map1[MyHero.tileIndex] = 1 pdv = pdv + 20 end
-    if map1[MyHero.tileIndex] == 6 then coins = coins + 1   map1[MyHero.tileIndex] = 1 score = score + 20 end 
+    if map1[MyHero.tileIndex] == 5 then pommes = pommes - 1   map1[MyHero.tileIndex] = 1 pdv = pdv + 20 MyHero.pommes = MyHero.pommes + 1 end
+    if map1[MyHero.tileIndex] == 6 then coins = coins - 1 MyHero.coins = MyHero.coins + 1  map1[MyHero.tileIndex] = 1 score = score + 20 end 
     --if tuiles[map[hero.x, hero.y]] == 5 or tuiles[map[hero.x, hero.y]] == 6
 end  
 
 function drawGameOver()
     love.graphics.setColor(0.5, 0.5, 0.8)
     love.graphics.print("GAME OVER", 250, 200, 0, 4, 4)
-    love.graphics.print("Score: "..score, 350, 300, 0, 2, 2)
+    love.graphics.print("Score: "..score, 350, 300, 0, 2, 2)   
+    love.graphics.rectangle("fill",100,450, 30, 30)
+    love.graphics.rectangle("fill",300,450, 30, 30)
+    love.graphics.print("press p to play again", 300, 400)
+    --love.graphics.print("exit", 300, 400)
 end
 
 function spawnPommes()
     local rand = math.random(1, #spawnPositions)
-    print(rand)
-    map1[rand] = 5
+    --print(rand)
+    map1[spawnPositions[rand]] = 5
     pommes = 1
     
 end
 
 function spawnCoins()
+    local rand = math.random(1, #spawnPositions)
+    --print(rand)
+    map1[spawnPositions[rand]] = 6
+    coins = 1
 end
+
+
+
+
 

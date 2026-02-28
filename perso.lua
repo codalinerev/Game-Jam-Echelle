@@ -20,11 +20,11 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
     newP.name = name
     newP.posX = posX
     newP.posY = posY
-    if madimg then newP.madimg = madimg else newP.badimg = img end
+    if madimg then newP.madimg = madimg else newP.madimg = img end
         
     points1 = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
-    points2 = {{70, 180}, {555, 180}}
-    points3 = {{10, 470}, {560, 470}}
+    points2 = {{40, 180}, {500, 180}}
+    points3 = {{10, 470}, {500, 470}}
     newP.points = {}
 
     if plan == 0 then newP.hasPlan = false
@@ -56,7 +56,8 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
     function newP:draw()
         if self.isVisible then
             --love.graphics.setColor(1, 1, 1)
-            love.graphics.draw(self.image, self.posX, self.posY, 0, 2, 2)
+            if self.badTemper then love.graphics.draw(self.madimg, self.posX, self.posY, 0, 2, 2)
+            else love.graphics.draw(self.image, self.posX, self.posY, 0, 2, 2) end
             --print(self.name .. "drawn at " .. self.posX .. " , " .. self.posY)
         end
     end
@@ -94,11 +95,11 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
             self:moveToPoint(self.target[1], self.target[2])                      
         end
         if newP.isAnim then self.animate() end
-        if self.collisions > 20 then 
+        --[[ if self.collisions > 20 then 
             if self.badTemper then newP:goMad() 
                               else self.badTemper = true 
                             end 
-        end                                    
+        end  ]]                                   
     end
 
     function newP:animate()
@@ -123,6 +124,7 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
 
     function newP:goMad()
     newP.giveDamage = 1
+    newP.img = newP.madImg
     end
 
     table.insert(listePerso, newP)
