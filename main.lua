@@ -16,7 +16,7 @@ function love.update(dt)
     MyHero:updateHero(dt)
     Bob:update(dt)
     updateGUI()
-    if pdv < 0 then isGameOver = true  end 
+    if pdv <= 0 then isGameOver = true  end 
 end
 
 function love.draw()
@@ -25,10 +25,7 @@ function love.draw()
 end
 
 function drawGame()
-    --love.graphics.setColor(0.8, 0.9, 1)  
-    --love.graphics.rectangle("fill", txt.x - 20, txt.y - 20, 200, 100)
-    --love.graphics.setColor(0.2, 0.5, 0.3)
-    --love.graphics.print(txt.message, txt.x, txt.y, 0, 1, 1)
+
     love.graphics.setColor(1, 1, 1)
     drawGrid()
     drawMap()
@@ -69,9 +66,6 @@ function drawGUI()
     love.graphics.setColor(GUI.bgColor)
     love.graphics.rectangle("fill", 530, 20, 250, 450)
     love.graphics.setColor(GUI.color)
-    --love.graphics.print(GUI.txt1, GUI.x, GUI.y)
-    --love.graphics.print(GUI.txt2, GUI.x, GUI.y + 20)
-    --love.graphics.print(GUI.txt3, GUI.x, GUI.y + 40)
 
         --, 0, 2, 2)
     local i = math.floor(pdv / 20) 
@@ -123,13 +117,14 @@ function updateScore() --check collision with hero and ennemi
         if distance < 20 then
             txt.message = "Collision detected with " .. pers.name
             pers.badTemper = true
+            pers.speed = 2
             degats = degats + pers.giveDamage
             pdv = pdv - pers.giveDamage       
             sfxOPerdon:play()
             pers.collisions = pers.collisions + 1
         end 
     end
-    if map1[MyHero.tileIndex] == 5 then pommes = pommes - 1   map1[MyHero.tileIndex] = 1 pdv = pdv + 20 MyHero.pommes = MyHero.pommes + 1 end
+    if map1[MyHero.tileIndex] == 5 then pommes = pommes - 1   map1[MyHero.tileIndex] = 1 pdv = pdv + 10 MyHero.pommes = MyHero.pommes + 1 end
     if map1[MyHero.tileIndex] == 6 then coins = coins - 1 MyHero.coins = MyHero.coins + 1  map1[MyHero.tileIndex] = 1 score = score + 20 end 
     --if tuiles[map[hero.x, hero.y]] == 5 or tuiles[map[hero.x, hero.y]] == 6
 end  
@@ -138,10 +133,7 @@ function drawGameOver()
     love.graphics.setColor(0.5, 0.5, 0.8)
     love.graphics.print("GAME OVER", 250, 200, 0, 4, 4)
     love.graphics.print("Score: "..score, 350, 300, 0, 2, 2)   
-    love.graphics.rectangle("fill",100,450, 30, 30)
-    love.graphics.rectangle("fill",300,450, 30, 30)
     love.graphics.print("press p to play again", 300, 400)
-    --love.graphics.print("exit", 300, 400)
 end
 
 function spawnPommes()

@@ -20,6 +20,7 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
     newP.name = name
     newP.posX = posX
     newP.posY = posY
+    newP.speed = 1
     if madimg then newP.madimg = madimg else newP.madimg = img end
         
     points1 = {{10, 10}, {10, 200}, {100, 200}, {100, 10}}
@@ -39,10 +40,9 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
 
     newP.target = newP.points[2]
     newP.ind = 1
-    newP.speed = 0
     newP.isVisible = true
     newP.isAnim = false
-    newP.giveDamage = 0.1
+    newP.giveDamage = 1
     newP.collisions = 0
     newP.badTemper = false
     print("create new personnage: " .. newP.name)
@@ -74,8 +74,8 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
 
         if distance > 0.1 then
             local speed = 50
-            local moveX = dx / distance * speed * love.timer.getDelta()
-            local moveY = dy / distance * speed * love.timer.getDelta()
+            local moveX = dx / distance * speed * newP.speed * love.timer.getDelta()
+            local moveY = dy / distance * speed * newP.speed * love.timer.getDelta()
 
             self.posX = self.posX + moveX
             self.posY = self.posY + moveY
@@ -123,7 +123,7 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
     end
 
     function newP:goMad()
-    newP.giveDamage = 1
+    newP.giveDamage = 5
     newP.img = newP.madImg
     end
 

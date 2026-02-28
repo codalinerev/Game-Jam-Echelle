@@ -62,7 +62,7 @@ print(GUI.txt2)
 myEnnemi = Perso:newPerso("ennemi", 70, 180, ennemiImage, 2, ennemimad)
 print("create myEnnemi")
 Bob = Perso:newPerso("Bob", 60, 470, imageInit, 3)
-Bob.speed = 40
+--Bob.speed = 40
 Bob.isAnim = true
 print("Bob a été crée!")
 print("init hero et perso")
