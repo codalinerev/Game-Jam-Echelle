@@ -139,7 +139,7 @@ end
 function spawnPommes()
     local rand = math.random(1, #spawnPositions)
     --print(rand)
-    map1[spawnPositions[rand]] = 5
+    if map1[spawnPositions[rand]] == 6 then spawnPommes() else map1[spawnPositions[rand]] = 5
     pommes = 1
     
 end
@@ -147,7 +147,7 @@ end
 function spawnCoins()
     local rand = math.random(1, #spawnPositions)
     --print(rand)
-    map1[spawnPositions[rand]] = 6
+    if map1[spawnPositions[rand]] == 5 then spawnCoins() else map1[spawnPositions[rand]] = 6
     coins = 1
 end
 

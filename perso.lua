@@ -124,7 +124,7 @@ function perso:newPerso(name, posX, posY, img, plan, madimg)
 
     function newP:goMad()
     newP.giveDamage = 5
-    newP.img = newP.madImg
+    if newP.isAnim then else newP.img = newP.madImg end
     end
 
     table.insert(listePerso, newP)
