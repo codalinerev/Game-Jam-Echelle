@@ -53,7 +53,7 @@ ennemiImage = love.graphics.newImage("assets/ennemi/greenEnemy.png")
 ennemimad = love.graphics.newImage("assets/ennemi/enemyGmad.png")
 heroImage = love.graphics.newImage("assets/hero/joyCalm.png")
 imageInit = love.graphics.newImage("assets/ennemi/ball1.png")
-MyHero = heroTable:newHero("MyHero", 339, 460, heroImage)
+MyHero = heroTable:newHero("MyHero", 339, 260, heroImage)
 love.graphics.print("HELLO!  je commence", 100, 150, 0, 2, 2)
 
 print("init images")

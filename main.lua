@@ -45,7 +45,7 @@ function drawMap() ----------------- tilesize = 32    grid 16 x 16 ----
         local y = math.floor((i - 1) / 16) * tileSize
         --print(map1[i]).    
         local j = map1[i]
-        if tuiles[j] == 4 then love.graphics.draw(tuiles[1], x, y) end
+        if tuiles[j] == 4 then love.graphics.draw(tuiles[1], x, y) end  --background derriere l'echelle
         if tuiles[j] then love.graphics.draw(tuiles[j], x, y)    
         else  love.graphics.draw(tuiles[1], x, y)   
         end        
@@ -96,7 +96,7 @@ function WhichTile(posX, posY)
         local tileY = math.floor((posY + 16) / 32) + 1
         local tileIndex = (tileY - 1) * 16 + tileX
         return tileIndex
-    end
+end
 
 function love.keypressed(key)
     if isGameOver and key == "p" then
@@ -114,8 +114,11 @@ function updateScore() --check collision with hero and ennemi
        local dx = MyHero.posX - pers.posX
         local dy = MyHero.posY - pers.posY
         local distance = math.sqrt(dx * dx + dy * dy)
-        if distance < 20 then
+        --if distance < 20 then
+        if ((dx > 0 and dx < 30) or (dx < 0 and dx > -30)) and ((dy < 0 and dy > -30) or (dy > 0 and dy < 30)) then       
             txt.message = "Collision detected with " .. pers.name
+            print(dx..","..dy)
+            print("Collision detected with " .. pers.name)
             pers.badTemper = true
             pers.speed = 2
             degats = degats + pers.giveDamage
@@ -139,7 +142,7 @@ end
 function spawnPommes()
     local rand = math.random(1, #spawnPositions)
     --print(rand)
-    if map1[spawnPositions[rand]] == 6 then spawnPommes() else map1[spawnPositions[rand]] = 5
+    if map1[spawnPositions[rand]] == 6 then spawnPommes() else map1[spawnPositions[rand]] = 5 end
     pommes = 1
     
 end
@@ -147,11 +150,6 @@ end
 function spawnCoins()
     local rand = math.random(1, #spawnPositions)
     --print(rand)
-    if map1[spawnPositions[rand]] == 5 then spawnCoins() else map1[spawnPositions[rand]] = 6
+    if map1[spawnPositions[rand]] == 5 then spawnCoins() else map1[spawnPositions[rand]] = 6 end
     coins = 1
-end
-
-
-
-
-
+end 

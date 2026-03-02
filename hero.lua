@@ -90,10 +90,10 @@ function hero:newHero(name, posx, posy, img)
 
     function newHero:updateHero(dt)
         if newHero.isAnim then newHero:animate() end 
-        tuileUp = map1[newHero:WhichTile(newHero.posX, newHero.posY - 27)]
-        tuileDown = map1[newHero:WhichTile(newHero.posX, newHero.posY + 27)]
-        tuileLeft = map1[newHero:WhichTile(newHero.posX - 27, newHero.posY)]
-        tuileRight = map1[newHero:WhichTile(newHero.posX + 27, newHero.posY)]
+        tuileUp = map1[newHero:WhichTile(newHero.posX, newHero.posY - 32)]
+        tuileDown = map1[newHero:WhichTile(newHero.posX, newHero.posY + 32)]
+        tuileLeft = map1[newHero:WhichTile(newHero.posX - 32, newHero.posY)]
+        tuileRight = map1[newHero:WhichTile(newHero.posX + 32, newHero.posY)]
         dX, dY = 0, 0
         newHero.isGrounded = tuileDown == 2 or tuileDown == 4
         self.tileIndex = self:WhichTile(self.posX, self.posY)
